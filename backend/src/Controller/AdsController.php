@@ -20,7 +20,7 @@ class AdsController extends AbstractController
     public function showAdvertisements(): JsonResponse
     {
         $allAds = $this->entityManager->getRepository(Advertisement::class)->findAll();
-        return new JsonResponse(data: $allAds);
+        return $this->json(data: $allAds);
     }
 
     #[Route('/create_ad', name: 'api_advertisement_create', methods: ['POST'])]
@@ -56,7 +56,6 @@ class AdsController extends AbstractController
     #[Route('/update_ad/{id}', name: 'api_advertisement_update', methods: ['PUT'])]
     public function updateAdvertisement(Request $request, int $id): JsonResponse
     {
-
         $advertisement = $this->entityManager->getRepository(Advertisement::class)->find($id);
 
         if (!$advertisement) {
@@ -86,14 +85,12 @@ class AdsController extends AbstractController
     #[Route('/delete_ad/{id}', name: 'api_advertisement_delete', methods: ['DELETE'])]
     public function deleteAdvertisement(int $id): JsonResponse
     {
-        // Fetch the existing Advertisement entity by its ID
         $advertisement = $this->entityManager->getRepository(Advertisement::class)->find($id);
 
         if (!$advertisement) {
             return $this->json(['message' => 'Advertisement not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Remove the Advertisement entity
         $this->entityManager->remove($advertisement);
         $this->entityManager->flush();
 
